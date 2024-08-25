@@ -1,4 +1,4 @@
-import pyaudio
+import sounddevice as sd
 import numpy as np
 import time
 import wave
@@ -23,7 +23,7 @@ os.environ['OPENAI_API_KEY'] = your_open_api_key
 st.title("Voice Based Real Time Seller")
 
 CHUNK = 1024
-FORMAT = pyaudio.paInt16
+FORMAT = 'int16'
 CHANNELS = 1
 RATE = 44100
 SILENCE_THRESHOLD = 500  # Threshold for detecting silence
@@ -36,38 +36,33 @@ class AudioRecorder(Thread):
         self.audio_data = []
 
     def run(self):
-        p = pyaudio.PyAudio()
-        stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE,
-                        input=True, frames_per_buffer=CHUNK)
-
-        print("Recording...")
-
-        start_time = time.time()
-        while self.recording:
-            data = stream.read(CHUNK)
-            self.audio_data.append(data)
-            audio_np = np.frombuffer(data, dtype=np.int16)
-            if np.max(np.abs(audio_np)) < SILENCE_THRESHOLD:
-                if time.time() - start_time > SILENCE_DURATION:
+        def callback(indata, frames, time, status):
+            audio_np = np.abs(indata)
+            if np.max(audio_np) < SILENCE_THRESHOLD:
+                if time.time() - self.start_time > SILENCE_DURATION:
                     self.recording = False
             else:
-                start_time = time.time()
+                self.start_time = time.time()
 
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
+            if self.recording:
+                self.audio_data.append(indata.copy())
+
+        self.start_time = time.time()
+        print("Recording...")
+        with sd.InputStream(channels=CHANNELS, callback=callback, dtype=FORMAT, samplerate=RATE):
+            while self.recording:
+                time.sleep(0.1)
         print("Recording stopped.")
 
 prompt = f"""
- You are a friendly and knowledgeable sales assistant specializing in fashion.
- give the output in the human english like a real person.
- Respond naturally and conversationally, as if you were a real person.
- Provide personalized clothing recommendations, focusing on style and fit.
- Keep your answers short, sweet, and helpful, without unnecessary details like(product ids ), if the coustmer were asking the give it.
+You are a friendly and knowledgeable sales assistant specializing in fashion.
+Give the output in human English like a real person.
+Respond naturally and conversationally, as if you were a real person.
+Provide personalized clothing recommendations, focusing on style and fit.
+Keep your answers short, sweet, and helpful, without unnecessary details like product ids unless the customer asks for them.
 
- Customer: {input}
-
-  """
+Customer: {{input}}
+"""
 
 # Initialize the OpenAI model
 openai_llm = LangchainOpenAI()
@@ -105,15 +100,17 @@ if process_url_clicked:
     recorder.join()
 
     # Save the audio data to a WAV file
+    audio_data = np.concatenate(recorder.audio_data)
     with wave.open('output2.wav', 'wb') as wf:
         wf.setnchannels(CHANNELS)
-        wf.setsampwidth(pyaudio.PyAudio().get_sample_size(FORMAT))
+        wf.setsampwidth(np.dtype(FORMAT).itemsize)
         wf.setframerate(RATE)
-        wf.writeframes(b''.join(recorder.audio_data))
+        wf.writeframes(audio_data.tobytes())
+    
     st.success("Recording saved successfully.")
     client = OpenAIApi()
     audio_file = open("output2.wav", "rb")
-    transcription = client.audio.translations.create(
+    transcription = client.audio.transcriptions.create(
         model="whisper-1",
         file=audio_file
     )
