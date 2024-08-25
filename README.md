@@ -41,21 +41,13 @@ To set up the project, follow these steps:
 
 ## Usage
 
-1. Run the setup script to install the necessary packages:
+1. Start the voice assistant by running the main script:
     ```bash
-    sudo apt-get install sqlite3
-    pip install pyaudio langchain langchain_community openai langchain_experimental pydub simpleaudio sounddevice soundfile
+    streamlit run app.py
     ```
 
-2. Start the voice assistant by running the main script:
-    ```bash
-    python voice_sellers_model.ipynb
-    ```
-
-3. Speak your fashion-related query, and the assistant will respond with personalized recommendations.
-4. Please use your openai api key in the app.py file.
-
-Certainly! Here's an improved version of the **Methodology** section for your README file:
+2. Speak your fashion-related query, and the assistant will respond with personalized recommendations.
+3. Please use your openai api key in the app.py file.
 
 ---
 
@@ -94,7 +86,6 @@ This project integrates various advanced technologies to create a voice-based fa
 
 ---
 
-This enhanced methodology section provides a more detailed and structured explanation of how the voice-based fashion sales assistant works, highlighting the integration of multiple technologies and the process flow from user input to final audio output.
 
 ## Results
 
@@ -102,4 +93,3 @@ The assistant provides real-time voice responses with fashion recommendations. I
 
 ---
 
-This README should help provide a clear overview of the project, its setup, and how to use it. If you have any specific details you'd like to include or modify, feel free to let me know!
