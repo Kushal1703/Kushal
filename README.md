@@ -28,7 +28,7 @@ To set up the project, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/YourUsername/voice-fashion-assistant.git
+    git clone https://github.com/Kushal1703/voice-fashion-assistant.git
     cd voice-fashion-assistant
     ```
 
