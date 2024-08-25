@@ -49,7 +49,7 @@ To set up the project, follow these steps:
 
 2. Start the voice assistant by running the main script:
     ```bash
-    python voice_seller.py
+    python voice_sellers_model.ipynb
     ```
 
 3. Speak your fashion-related query, and the assistant will respond with personalized recommendations.
