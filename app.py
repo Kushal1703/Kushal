@@ -9,8 +9,6 @@ from langchain import SQLDatabase
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from pydub import AudioSegment
-from pydub.playback import play
 from openai import OpenAI as OpenAIApi
 from IPython.display import Audio
 from io import BytesIO
