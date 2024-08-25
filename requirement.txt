@@ -1,0 +1,10 @@
+
+pyaudio
+langchain
+langchain_community
+openai
+langchain_experimental
+pydub
+simpleaudio
+sounddevice
+soundfile
