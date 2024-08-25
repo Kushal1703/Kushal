@@ -53,6 +53,7 @@ To set up the project, follow these steps:
     ```
 
 3. Speak your fashion-related query, and the assistant will respond with personalized recommendations.
+4. Please use your openai api key in the app.py file.
 
 Certainly! Here's an improved version of the **Methodology** section for your README file:
 
